@@ -66,7 +66,10 @@ if (isset($_POST["btnSave"])) {
                 $showAlert = true;
                 $errorMsg = "No record has been saved!";
             }
+
+            header("Location: mainpage.php");
         }
+
     }
 }
 ?>
@@ -276,9 +279,11 @@ if (isset($_POST["btnSave"])) {
 </head>
 <body>
     <div class="container">
-    <a href="mainpage.php" class="btn btn-outline-primary">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Main Page
-        <div class="form-container">
+    <a href="mainpage.php" class="btn btn-outline-primary mb-3">
+    <i class="fas fa-arrow-left me-2"></i>Back to Main Page
+</a>
+<div class="form-container">
+
             <div class="form-header">
                 <h1>Create Your Account</h1>
             </div>
@@ -367,6 +372,29 @@ if (isset($_POST["btnSave"])) {
                 buttonsStyling: false
             });
         <?php endif; ?>
+        <?php if ($showAlert): ?>
+
+
     </script>
+
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '<?= $errorMsg ?>',
+    });
+</script>
+<?php endif; ?>
+
+<?php if ($showSuccess): ?>
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Account has been created successfully.',
+    });
+</script>
+<?php endif; ?>
+
 </body>
 </html>

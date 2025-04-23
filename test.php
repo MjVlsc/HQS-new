@@ -87,8 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         10 => 'HMO-',   // HMO
         11 => 'INF-',   // Information
         13 => 'ER-',   // Emergency Room
-        14 => 'SW-',   // Social Worker
-        15 => 'RAD-' // Radiology
+        14 => 'SW-'   // Social Worker
     ];
 
     // Get the prefix for the department
@@ -437,7 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Recent Queues Section -->
             <?php if (!empty($recentQueues)): ?>
             <div class="recent-queues">
-                <h5 class="mb-3"><i class="fas fa-history me-2"></i>Your Recent Queue Tickets</h5>
+                <h5 class="mb-3"><i class="fas fa-history me-2"></i>Recent Queue Tickets</h5>
                 <p class="text-muted mb-3">Click on any ticket below to reprint it</p>
                 
                 <div class="list-group">

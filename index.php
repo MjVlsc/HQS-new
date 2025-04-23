@@ -36,10 +36,13 @@ if (isset($_POST["btnLogin"])) {
                     case 2: header("Location: queue_phar.php"); break;
                     case 3: header("Location: queue_med.php"); break;
                     case 4: header("Location: queue_ult.php"); break;
-                    case 5: header("Location: queue_xr.php"); break;
+                    case 5: header("Location: queue_xray.php"); break;
                     case 6: header("Location: queue_rh.php"); break;
                     case 7: header("Location: queue_dia.php"); break;
                     case 8: header("Location: queue_lab.php"); break;
+                    case 13: header("Location: queue_er.php"); break;
+                    case 14: header("Location: queue_sw.php"); break;
+                    case 15: header("Location: queue_rad.php"); break;
                     default:
                         echo "<script>alert('Unauthorized department access.'); history.back();</script>";
                         break;

@@ -603,7 +603,16 @@ foreach ($departments as $department) {
         </div>
       </a>
     <?php endif; ?>
+    <?php if ($role === 'Admin' || $role === 'Admitting' || $role === 'Information'): ?>
+  <a href="queue_rad.php" class="card-link">
+        <div class="card" tabindex="0">
+          <i class="fas fa-microscope" aria-hidden="true"></i>
+          <h2>Radiology</h2>
+        </div>
+      </a>
+    <?php endif; ?>
   </div>
+
 </main>
 
 <script>

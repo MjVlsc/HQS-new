@@ -1,17 +1,76 @@
 <?php
 session_start();
-date_default_timezone_set('Asia/Manila');
-
 require('lib/conn.php');
+require('lib/audit.php');
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit();
+}
+
+// Determine redirect URL based on user role
+$redirect_url = ($_SESSION['role'] == 'Admin') ? 'mainpage.php' : 'queue_display.php';
+
+// Handle reprint request
+if (isset($_GET['reprint']) && !empty($_GET['reprint'])) {
+    $queueId = $_GET['reprint'];
+
+    // Fetch the queue data from database
+    $stmt = $conn->prepare("SELECT 
+        q.queue_num, 
+        q.service_name, 
+        q.priority, 
+        q.created_at,
+        d.name as department_name
+        FROM queues q
+        JOIN departments d ON q.department_id = d.dept_id
+        WHERE q.qid = :queue_id AND q.created_by = :user_id");
+
+    $stmt->execute([
+        ':queue_id' => $queueId,
+        ':user_id' => $_SESSION['user_id']
+    ]);
+
+    $queueData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($queueData) {
+        // Store in session for display
+        $_SESSION['ticket_data'] = [
+            'queue_num' => $queueData['queue_num'],
+            'services' => $queueData['service_name'],
+            'department' => $queueData['department_name'],
+            'priority' => $queueData['priority'],
+            'created_at' => $queueData['created_at']
+        ];
+
+        // Log the reprint action
+        logAction(
+            $conn,
+            'REPRINT_TICKET',
+            'queues',
+            $queueId,
+            $_SESSION['user_id'],
+            $_SESSION['username'],
+            $_SESSION['role'],
+            json_encode(['queue_num' => $queueData['queue_num']])
+        );
+    } else {
+        // Queue not found or doesn't belong to user
+        $_SESSION['error'] = "Ticket not found or you don't have permission to reprint it";
+        header("Location: $redirect_url");
+        exit();
+    }
+}
+
+// Check if ticket data exists
 if (!isset($_SESSION['ticket_data'])) {
-    header("Location: add_patient_q.php");
+    header("Location: $redirect_url");
     exit();
 }
 
 $ticket = $_SESSION['ticket_data'];
-unset($_SESSION['ticket_data']);
-$redirect_url = ($_SESSION['role'] == "Admin") ? 'queue_display_admin.php' : 'queue_display.php';
+unset($_SESSION['ticket_data']); // Clear after use
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,18 +79,18 @@ $redirect_url = ($_SESSION['role'] == "Admin") ? 'queue_display_admin.php' : 'qu
   <meta name="viewport" content="width=80mm, initial-scale=1.0">
   <title>Queue Ticket</title>
   <style>
-     @page {
+    @page {
       size: 80mm 100mm;
       margin: 0;
     }
     body {
       font-family: Arial, sans-serif;
       font-size: 10px;
-      width: 76mm; /* Reduced to accommodate border */
+      width: 76mm;
       height: 48mm;
-      margin: 2mm auto; /* Centered with small margins */
-      padding: 0 2mm; /* Left/right padding */
-      border: 1px solid #000; /* Ticket border */
+      margin: 2mm auto;
+      padding: 0 2mm;
+      border: 1px solid #000;
     }
     .ticket-columns {
         display: flex;
@@ -52,7 +111,6 @@ $redirect_url = ($_SESSION['role'] == "Admin") ? 'queue_display_admin.php' : 'qu
         font-size: 0.9em;
     }
     
-    /* Keep your existing styles for other elements */
     .ticket-header {
         text-align: center;
         margin-bottom: 15px;
@@ -64,6 +122,35 @@ $redirect_url = ($_SESSION['role'] == "Admin") ? 'queue_display_admin.php' : 'qu
         font-weight: bold;
         margin: 15px 0;
     }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        padding: 0 10px;
+    }
+    
+    .action-btn {
+        padding: 5px 10px;
+        font-size: 10px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        background: #f8f9fa;
+        border-radius: 3px;
+    }
+    
+    .print-btn {
+        background: #4CAF50;
+        color: white;
+        border: none;
+    }
+    
+    .back-btn {
+        background: #f44336;
+        color: white;
+        border: none;
+    }
+    
     @media print {
       .no-print {
         display: none !important;
@@ -73,62 +160,7 @@ $redirect_url = ($_SESSION['role'] == "Admin") ? 'queue_display_admin.php' : 'qu
         margin: 0 auto;
       }
     }
-</style>
-  <!-- <style>
-    @page {
-      size: 80mm 100mm;
-      margin: 0;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 10px;
-      width: 76mm; /* Reduced to accommodate border */
-      height: 100mm;
-      margin: 2mm auto; /* Centered with small margins */
-      padding: 0 2mm; /* Left/right padding */
-      border: 1px solid #000; /* Ticket border */
-    }
-    .ticket-header {
-      text-align: center;
-      margin-bottom: 3mm;
-      border-bottom: 1px dashed #000;
-      padding-bottom: 3mm;
-      padding-top: 2mm;
-    }
-    .ticket-header h2 {
-      font-size: 14px;
-      margin: 0;
-      font-weight: bold;
-    }
-    .ticket-header p {
-      font-size: 10px;
-      margin: 2mm 0 0 0;
-    }
-    .ticket-number {
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
-      margin: 3mm 0;
-    }
-    .ticket-detail {
-      margin-bottom: 2mm;
-      padding-bottom: 2mm;
-      border-bottom: 1px dashed #ccc;
-      padding-left: 2mm; /* Added left padding */
-    }
-    .detail-label {
-      font-weight: bold;
-    }
-    @media print {
-      .no-print {
-        display: none !important;
-      }
-      body {
-        padding: 0 2mm;
-        margin: 0 auto;
-      }
-    }
-  </style> -->
+  </style>
 </head>
 <body>
 <div class="ticket-header">
@@ -167,15 +199,38 @@ $redirect_url = ($_SESSION['role'] == "Admin") ? 'queue_display_admin.php' : 'qu
     </div>
 </div>
 
+<div class="no-print action-buttons">
+    <button onclick="window.location.href='<?= $redirect_url ?>'" class="action-btn back-btn">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <button onclick="printTicket()" class="action-btn print-btn">
+        <i class="fas fa-print"></i> Print Ticket
+    </button>
+</div>
 
-  <div class="no-print" style="text-align: center; margin-top: 5mm; padding-left: 2mm;">
-    <button onclick="window.print()" style="padding: 2mm 5mm; font-size: 10px;">Print Ticket</button>
-  </div>
-
-  <script>
+<script>
+    function printTicket() {
+        window.print();
+    }
+    
+    // Handle after print or cancel
     window.onafterprint = function() {
-      window.location.href = "<?= $redirect_url ?>";
+        window.location.href = "<?= $redirect_url ?>";
     };
-  </script>
+    
+    // Alternative method for browsers that don't trigger onafterprint
+    function checkPrintStatus() {
+        setTimeout(function() {
+            window.location.href = "<?= $redirect_url ?>";
+        }, 3000); // Redirect after 3 seconds if still on page
+    }
+    
+    // Call check when print button is clicked
+    function printTicket() {
+        window.print();
+        checkPrintStatus();
+    }
+</script>
 </body>
 </html>
+

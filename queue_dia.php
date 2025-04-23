@@ -1,5 +1,20 @@
 <?php 
+session_start();
 require('lib/conn.php');
+
+// Check if user is logged in, otherwise redirect to login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit();
+}
+
+// Generate CSRF token for logout if not exists
+if (!isset($_SESSION['logout_token'])) {
+    $_SESSION['logout_token'] = bin2hex(random_bytes(32));
+}
+
+$role = $_SESSION['role'];
+$username = $_SESSION['username'];
 
 // Get department_id from URL or default to 5
 $departmentId = isset($_GET['department_id']) ? intval($_GET['department_id']) : 7;
@@ -11,6 +26,16 @@ $deptStmt->execute(['dept_id' => $departmentId]);
 if ($row = $deptStmt->fetch()) {
     $deptName = $row['name'];
 }
+
+$userDeptName = "Unknown User's Department";
+$deptStmt = $conn->prepare("SELECT d.name FROM departments d 
+                            JOIN users u ON d.dept_id = u.dept_id 
+                            WHERE u.user_id = :user_id ");
+$deptStmt->execute(['user_id' => $_SESSION['user_id']]);
+if ($row = $deptStmt->fetch()){
+  $userDeptName = $row['name'];
+}
+
 
 // Get current queue
 $currentStmt = $conn->prepare("
@@ -206,6 +231,21 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       flex-direction: column;
       gap: 20px;
     }
+    .user-info {
+  text-align: center;
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #4e54c8 0%,rgb(34, 157, 168) 100%);
+  color: var(--white);
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 2px 1px 1px rgba(0,0,0,0.2);
+  width: fit-content;
+  margin-left: auto;
+  transition: all 0.2s ease;
+}
     
     /* Cards */
     .card {
@@ -415,9 +455,106 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
     .btn-undo:hover {
       background: #5a6268;
     }
+
+  
+/* User info panel */
+.user-info-panel {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.user-info-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.user-icon {
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.username {
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-size: 0.95rem;
+}
+
+.dept-name {
+  color: var(--dark-gray);
+  font-size: 0.8rem;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 1rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(230, 57, 70, 0.1);
+  transform: scale(1.05);
+}
+
+/* Adjust body padding to prevent overlap */
+body {
+  padding-bottom: 80px; /* Add space for the fixed user panel */
+}
+
+/* SweetAlert customization */
+.sweet-alert-popup {
+  background: var(--white) !important;
+  color: var(--primary-dark) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.swal2-title {
+  color: var(--primary-dark) !important;
+}
+
+.swal2-content {
+  color: var(--dark-gray) !important;
+}
+
   </style>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+<div class="user-info-panel">
+  <div class="user-info-content">
+    <i class="fas fa-user-circle user-icon"></i>
+    <div class="user-details">
+      <span class="username"><?php echo htmlspecialchars($username); ?></span>
+      <span class="dept-name"><?php echo htmlspecialchars($userDeptName); ?></span>
+    </div>
+    <button id="logoutBtn" class="logout-btn" title="Logout">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</div>
   <!-- Left Side Panel -->
   <div class="side-panel">
     <div class="card">
@@ -448,6 +585,7 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
     </div>
   </div>
 
+  
   <!-- Main Content -->
   <div class="main-content">
     <div class="card current-queue">
@@ -545,6 +683,7 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
 
   <!-- Right Side Panel -->
   <div class="side-panel">
+  
     <div class="card">
       <div class="card-header">
         <span>Postponed</span>
@@ -802,6 +941,28 @@ window.addEventListener('load', () => {
 
 // Auto-refresh every 10 seconds
 setTimeout(() => location.reload(), 10000);
+
+
+// Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', function(){
+      Swal.fire({
+        title: 'Logout Confirmation',
+        text: 'Are you sure you want to logout?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#e63946',
+        cancelButtonColor: '#457b9d',
+        cancelButtonText: 'Cancel',
+        background: 'var(--gray)',
+        customClass: {
+          popup: 'sweet-alert-popup'
+        }
+       }).then ((result) => {
+         if (result.isConfirmed){
+          window.location.href='logout.php?token=<?= $_SESSION['logout_token'] ?>';
+         }
+       } );
+    });
 </script>
 </body>
 </html>

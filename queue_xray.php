@@ -1,5 +1,20 @@
 <?php 
+session_start();
 require('lib/conn.php');
+
+// Check if user is logged in, otherwise redirect to login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    exit();
+}
+
+// Generate CSRF token for logout if not exists
+if (!isset($_SESSION['logout_token'])) {
+    $_SESSION['logout_token'] = bin2hex(random_bytes(32));
+}
+
+$role = $_SESSION['role'];
+$username = $_SESSION['username'];
 
 // Get department_id from URL or default to 5
 $departmentId = isset($_GET['department_id']) ? intval($_GET['department_id']) : 5;
@@ -12,19 +27,28 @@ if ($row = $deptStmt->fetch()) {
     $deptName = $row['name'];
 }
 
+$userDeptName = "Unknown User's Department";
+$deptStmt = $conn->prepare("SELECT d.name FROM departments d 
+                            JOIN users u ON d.dept_id = u.dept_id 
+                            WHERE u.user_id = :user_id ");
+$deptStmt->execute(['user_id' => $_SESSION['user_id']]);
+if ($row = $deptStmt->fetch()){
+  $userDeptName = $row['name'];
+}
+
+
 // Get current queue
 $currentStmt = $conn->prepare("
     SELECT * FROM queues 
     WHERE status = 'in-progress' AND department_id = :dept_id
     ORDER BY 
-        CASE priority
-            WHEN 'emergency' THEN 1
-            WHEN 'PWD' THEN 2
-            WHEN 'Senior_Citizen' THEN 3
-            WHEN 'pregnant' THEN 4
-            ELSE 5
-        END,
-        CAST(SUBSTRING(queue_num, 5) AS UNSIGNED) ASC
+            CASE 
+                WHEN priority = 'Red Flag' THEN 0
+                 WHEN priority = 'Emergency' THEN 1
+                WHEN priority IN ('PWD', 'Senior Citizen', 'Pregnant') THEN 2
+                ELSE 3
+            END,
+        CAST(SUBSTRING(queue_num, 3) AS UNSIGNED) ASC
     LIMIT 1
 ");
 $currentStmt->execute(['dept_id' => $departmentId]);
@@ -34,14 +58,13 @@ $currentQueue = $currentStmt->fetch();
 $upcomingStmt = $conn->prepare("
     SELECT * FROM queues 
     WHERE status = 'waiting' AND department_id = :dept_id
-    ORDER BY 
-        CASE priority
-            WHEN 'emergency' THEN 1
-            WHEN 'PWD' THEN 2
-            WHEN 'Senior_Citizen' THEN 3
-            WHEN 'pregnant' THEN 4
-            ELSE 5
-        END,
+     ORDER BY 
+            CASE 
+                WHEN priority = 'Red Flag' THEN 0
+                 WHEN priority = 'Emergency' THEN 1
+                WHEN priority IN ('PWD', 'Senior Citizen', 'Pregnant') THEN 2
+                ELSE 3
+            END,
         created_at ASC
 ");
 $upcomingStmt->execute(['dept_id' => $departmentId]);
@@ -111,7 +134,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (isset($_POST['reactivate'])) {
         $qid = $_POST['qid'];
-        $conn->prepare("UPDATE queues SET status = 'waiting', announcement_count = 0, created_at = NOW() WHERE qid = :qid")
+        $conn->prepare("UPDATE queues SET status = 'waiting', announcement_count = 0, created_at = NOW(), was_postponed = 1 WHERE qid = :qid")
+             ->execute(['qid' => $qid]);
+        header("Location: " . $_SERVER['PHP_SELF'] . "?department_id=" . $departmentId);
+        exit;
+    } elseif (isset($_POST['repostpone'])) {
+        $qid = $_POST['qid'];
+        $conn->prepare("UPDATE queues SET status = 'postponed', was_postponed = 0 WHERE qid = :qid")
              ->execute(['qid' => $qid]);
         header("Location: " . $_SERVER['PHP_SELF'] . "?department_id=" . $departmentId);
         exit;
@@ -140,6 +169,16 @@ if (isset($_GET['announced'])) {
 
 $hasUpcomingQueues = count($allUpcomingQueues) > 0;
 
+// Get recently reactivated queues (those with was_postponed flag)
+$reactivatedStmt = $conn->prepare("
+    SELECT * FROM queues 
+    WHERE status = 'waiting' AND was_postponed = 1 AND department_id = :dept_id
+    ORDER BY updated_at DESC
+    LIMIT 3
+");
+$reactivatedStmt->execute(['dept_id' => $departmentId]);
+$reactivatedQueues = $reactivatedStmt->fetchAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -148,7 +187,7 @@ $hasUpcomingQueues = count($allUpcomingQueues) > 0;
   <meta charset="UTF-8">
   <title>Queue - <?= htmlspecialchars($deptName) ?></title>
   <style>
-    :root {
+  :root {
       --primary: #457b9d;
       --primary-dark: #1d3557;
       --secondary: #e63946;
@@ -192,6 +231,21 @@ $hasUpcomingQueues = count($allUpcomingQueues) > 0;
       flex-direction: column;
       gap: 20px;
     }
+    .user-info {
+  text-align: center;
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #4e54c8 0%,rgb(34, 157, 168) 100%);
+  color: var(--white);
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 2px 1px 1px rgba(0,0,0,0.2);
+  width: fit-content;
+  margin-left: auto;
+  transition: all 0.2s ease;
+}
     
     /* Cards */
     .card {
@@ -387,9 +441,120 @@ $hasUpcomingQueues = count($allUpcomingQueues) > 0;
         width: 100%;
       }
     }
+    .btn-undo {
+      background: #6c757d;
+      color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .btn-undo:hover {
+      background: #5a6268;
+    }
+
+  
+/* User info panel */
+.user-info-panel {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.user-info-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.user-icon {
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.username {
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-size: 0.95rem;
+}
+
+.dept-name {
+  color: var(--dark-gray);
+  font-size: 0.8rem;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 1rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(230, 57, 70, 0.1);
+  transform: scale(1.05);
+}
+
+/* Adjust body padding to prevent overlap */
+body {
+  padding-bottom: 80px; /* Add space for the fixed user panel */
+}
+
+/* SweetAlert customization */
+.sweet-alert-popup {
+  background: var(--white) !important;
+  color: var(--primary-dark) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.swal2-title {
+  color: var(--primary-dark) !important;
+}
+
+.swal2-content {
+  color: var(--dark-gray) !important;
+}
+
   </style>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+<div class="user-info-panel">
+  <div class="user-info-content">
+    <i class="fas fa-user-circle user-icon"></i>
+    <div class="user-details">
+      <span class="username"><?php echo htmlspecialchars($username); ?></span>
+      <span class="dept-name"><?php echo htmlspecialchars($userDeptName); ?></span>
+    </div>
+    <button id="logoutBtn" class="logout-btn" title="Logout">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</div>
   <!-- Left Side Panel -->
   <div class="side-panel">
     <div class="card">
@@ -420,6 +585,7 @@ $hasUpcomingQueues = count($allUpcomingQueues) > 0;
     </div>
   </div>
 
+  
   <!-- Main Content -->
   <div class="main-content">
     <div class="card current-queue">
@@ -438,39 +604,39 @@ $hasUpcomingQueues = count($allUpcomingQueues) > 0;
         </div>
         
         <div class="queue-actions">
-  <?php if (($currentQueue['announcement_count'] ?? 0) < 3): ?>
-    <button class="announce-btn btn btn-primary" onclick="announceCurrentQueue()">
-      📢 Announce
-    </button>
-  <?php else: ?>
-    <button class="announce-btn btn btn-primary" disabled style="opacity: 0.6; cursor: not-allowed;">
-      📢 Announce (Max 3)
-    </button>
-  <?php endif; ?>
-  
-  <?php if (!$hasUpcomingQueues): ?>
-    <form method="post">
-      <input type="hidden" name="qid" value="<?= $currentQueue['qid'] ?>">
-      <button type="submit" name="complete_current" class="btn btn-success">
-        ✓ Mark as Completed
-      </button>
-    </form>
-  <?php endif; ?>
-  
-  <form method="post" style="display:inline;">
-    <button type="submit" name="pending_queue" class="btn btn-warning">
-      ⏳ Mark as Pending
-    </button>
-  </form>
-  
-  <?php if (($currentQueue['announcement_count'] ?? 0) >= 3): ?>
-    <form method="post" style="display:inline;">
-      <button type="submit" name="postpone_queue" class="btn btn-danger">
-        ↻ Postpone Queue
-      </button>
-    </form>
-  <?php endif; ?>
-</div>
+          <?php if (($currentQueue['announcement_count'] ?? 0) < 3): ?>
+            <button class="announce-btn btn btn-primary" onclick="announceCurrentQueue()">
+              📢 Announce
+            </button>
+          <?php else: ?>
+            <button class="announce-btn btn btn-primary" disabled style="opacity: 0.6; cursor: not-allowed;">
+              📢 Announce (Max 3)
+            </button>
+          <?php endif; ?>
+          
+          <?php if (!$hasUpcomingQueues): ?>
+            <form method="post">
+              <input type="hidden" name="qid" value="<?= $currentQueue['qid'] ?>">
+              <button type="submit" name="complete_current" class="btn btn-success">
+                ✓ Mark as Completed
+              </button>
+            </form>
+          <?php endif; ?>
+          
+          <form method="post" style="display:inline;">
+            <button type="submit" name="pending_queue" class="btn btn-warning">
+              ⏳ Mark as Pending
+            </button>
+          </form>
+          
+          <?php if (($currentQueue['announcement_count'] ?? 0) >= 3): ?>
+            <form method="post" style="display:inline;">
+              <button type="submit" name="postpone_queue" class="btn btn-danger">
+                ↻ Postpone Queue
+              </button>
+            </form>
+          <?php endif; ?>
+        </div>
       <?php else: ?>
         <div class="empty-state">No active queue</div>
       <?php endif; ?>
@@ -493,6 +659,14 @@ $hasUpcomingQueues = count($allUpcomingQueues) > 0;
             <div class="queue-item">
               <span class="queue-item-number"><?= $q['queue_num'] ?></span>
               <span class="queue-item-priority"><?= ucfirst($q['priority']) ?></span>
+              <?php if ($q['was_postponed'] ?? false): ?>
+                <form method="post" style="display:inline;">
+                  <input type="hidden" name="qid" value="<?= $q['qid'] ?>">
+                  <button type="submit" name="repostpone" class="btn-undo" title="Return to postponed">
+                    ↻ Undo
+                  </button>
+                </form>
+              <?php endif; ?>
             </div>
           <?php endforeach; ?>
           <?php if (count($allUpcomingQueues) > 5): ?>
@@ -509,6 +683,7 @@ $hasUpcomingQueues = count($allUpcomingQueues) > 0;
 
   <!-- Right Side Panel -->
   <div class="side-panel">
+  
     <div class="card">
       <div class="card-header">
         <span>Postponed</span>
@@ -579,6 +754,12 @@ const announcementSystem = {
       qid: '<?= $currentQueue['qid'] ?? '' ?>',
       isPendingCall: isPendingCall
     };
+
+    // Immediately increment the announcement count
+    if (!isPendingCall) {
+      fetch(`?announced=${announcement.qid}&department_id=${announcement.departmentId}`)
+        .catch(err => console.error('Announcement count update failed:', err));
+    }
 
     // Get or initialize queue
     let queue = [];
@@ -654,15 +835,6 @@ const announcementSystem = {
     utterance.onend = () => {
       tabState.isSpeaking = false;
       localStorage.removeItem('announcementLock');
-      
-      // Update announcement count AFTER speech is complete (only for regular announcements)
-      if (!announcement.isPendingCall) {
-        fetch(`?announced=${announcement.qid}&department_id=${announcement.departmentId}`)
-          .then(() => {
-            // Refresh to show updated count after a short delay
-            setTimeout(() => location.reload(), 300);
-          });
-      }
       
       // Re-enable the announce button
       const announceBtn = document.querySelector('.announce-btn');
@@ -746,7 +918,7 @@ function initializeAnnouncements() {
   announcementSystem.init();
   
   <?php if (isset($currentQueue) && $currentQueue): ?>
-    // Auto-announce on page load 
+    // Auto-announce on page load for X-ray department
     if (window.location.pathname.includes('queue_xray.php')) {
       const announcedKey = `announced_${<?= $currentQueue['queue_num'] ?>}_<?= $departmentId ?>`;
       if (!localStorage.getItem(announcedKey)) {
@@ -769,6 +941,28 @@ window.addEventListener('load', () => {
 
 // Auto-refresh every 10 seconds
 setTimeout(() => location.reload(), 10000);
+
+
+// Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', function(){
+      Swal.fire({
+        title: 'Logout Confirmation',
+        text: 'Are you sure you want to logout?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#e63946',
+        cancelButtonColor: '#457b9d',
+        cancelButtonText: 'Cancel',
+        background: 'var(--gray)',
+        customClass: {
+          popup: 'sweet-alert-popup'
+        }
+       }).then ((result) => {
+         if (result.isConfirmed){
+          window.location.href='logout.php?token=<?= $_SESSION['logout_token'] ?>';
+         }
+       } );
+    });
 </script>
 </body>
 </html>
