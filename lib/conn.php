@@ -2,7 +2,7 @@
 
 $servername = "localhost";
 $dbusername = "root";
-$database = "dbhqs";
+$database = "hqs";
 
 try{	
 	$conn = new PDO("mysql:host=$servername; dbname=$database", $dbusername);

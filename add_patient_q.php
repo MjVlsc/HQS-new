@@ -353,7 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="m-0"><i class="fas fa-hospital-alt me-2"></i>Hospital Queue System</h1>
                 <a href="<?php echo ($role == 'Admin') ? 'queue_display_admin.php' : 'queue_display.php'; ?>" class="btn btn-outline-light">
-                    <i class="fas fa-tv me-2"></i>View Display
+                    <i class="fas fa-tv me-2"></i>Home
                 </a>
             </div>
         </div>

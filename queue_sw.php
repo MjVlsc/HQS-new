@@ -212,9 +212,9 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       padding: 20px;
       min-height: 100vh;
       display: grid;
-      grid-template-columns: 250px 1fr 250px;
+      grid-template-columns: 300px 1fr 300px; /* Increased side panel width */
       gap: 20px;
-      max-width: 1400px;
+      max-width: 1600px; /* Increased max width */
       margin: 0 auto;
     }
     
@@ -231,21 +231,22 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       flex-direction: column;
       gap: 20px;
     }
+    
     .user-info {
-  text-align: center;
-  margin-bottom: 10px;
-  padding: 10px 15px;
-  background: linear-gradient(135deg, #4e54c8 0%,rgb(34, 157, 168) 100%);
-  color: var(--white);
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 1rem;
-  box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
-  text-shadow: 2px 1px 1px rgba(0,0,0,0.2);
-  width: fit-content;
-  margin-left: auto;
-  transition: all 0.2s ease;
-}
+      text-align: center;
+      margin-bottom: 10px;
+      padding: 10px 15px;
+      background: linear-gradient(135deg, #4e54c8 0%,rgb(34, 157, 168) 100%);
+      color: var(--white);
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+      text-shadow: 2px 1px 1px rgba(0,0,0,0.2);
+      width: fit-content;
+      margin-left: auto;
+      transition: all 0.2s ease;
+    }
     
     /* Cards */
     .card {
@@ -254,6 +255,9 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
       padding: 20px;
       transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      height: 400px; /* Fixed height for all cards */
     }
     
     .card:hover {
@@ -276,12 +280,35 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       display: flex;
       flex-direction: column;
       gap: 12px;
+      overflow-y: auto; /* Add scrollbar when content overflows */
+      flex-grow: 1;
+      padding-right: 8px; /* Add space for scrollbar */
+    }
+    
+    /* Custom scrollbar */
+    .card-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .card-body::-webkit-scrollbar-track {
+      background: var(--light-gray);
+      border-radius: 10px;
+    }
+    
+    .card-body::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+    
+    .card-body::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
     }
     
     /* Current queue display */
     .current-queue {
       text-align: center;
       padding: 30px 20px;
+      height: auto; /* Override fixed height for main queue display */
     }
     
     .queue-number {
@@ -393,6 +420,28 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       color: var(--dark-gray);
     }
     
+    .priority-flag {
+      font-size: 0.8rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    
+    .priority-emergency {
+      background: #ffcccc;
+      color: #cc0000;
+    }
+    
+    .priority-pwd {
+      background: #fff0cc;
+      color: #cc8400;
+    }
+    
+    .priority-normal {
+      background: #e0e0e0;
+      color: #424242;
+    }
+    
     .queue-item-actions {
       display: flex;
       gap: 6px;
@@ -415,7 +464,7 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
     }
     
     /* Responsive adjustments */
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px) {
       body {
         grid-template-columns: 1fr;
       }
@@ -427,7 +476,7 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       }
       
       .side-panel > .card {
-        flex: 1 1 300px;
+        flex: 1 1 350px;
       }
     }
     
@@ -440,7 +489,12 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       .btn {
         width: 100%;
       }
+      
+      .side-panel > .card {
+        flex: 1 1 100%;
+      }
     }
+    
     .btn-undo {
       background: #6c757d;
       color: white;
@@ -456,90 +510,88 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       background: #5a6268;
     }
 
-  
-/* User info panel */
-.user-info-panel {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 1000;
-}
+    /* User info panel */
+    .user-info-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
 
-.user-info-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: white;
-  padding: 10px 15px;
-  border-radius: 15px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+    .user-info-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
 
-.user-icon {
-  color: var(--primary);
-  font-size: 1.5rem;
-}
+    .user-icon {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
 
-.user-details {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.3;
-}
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.3;
+    }
 
-.username {
-  font-weight: 600;
-  color: var(--primary-dark);
-  font-size: 0.95rem;
-}
+    .username {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 0.95rem;
+    }
 
-.dept-name {
-  color: var(--dark-gray);
-  font-size: 0.8rem;
-}
+    .dept-name {
+      color: var(--dark-gray);
+      font-size: 0.8rem;
+    }
 
-.logout-btn {
-  background: none;
-  border: none;
-  color: var(--danger);
-  cursor: pointer;
-  font-size: 1rem;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
-}
+    .logout-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 1rem;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
 
-.logout-btn:hover {
-  background: rgba(230, 57, 70, 0.1);
-  transform: scale(1.05);
-}
+    .logout-btn:hover {
+      background: rgba(230, 57, 70, 0.1);
+      transform: scale(1.05);
+    }
 
-/* Adjust body padding to prevent overlap */
-body {
-  padding-bottom: 80px; /* Add space for the fixed user panel */
-}
+    /* Adjust body padding to prevent overlap */
+    body {
+      padding-bottom: 80px; /* Add space for the fixed user panel */
+    }
 
-/* SweetAlert customization */
-.sweet-alert-popup {
-  background: var(--white) !important;
-  color: var(--primary-dark) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-}
+    /* SweetAlert customization */
+    .sweet-alert-popup {
+      background: var(--white) !important;
+      color: var(--primary-dark) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    }
 
-.swal2-title {
-  color: var(--primary-dark) !important;
-}
+    .swal2-title {
+      color: var(--primary-dark) !important;
+    }
 
-.swal2-content {
-  color: var(--dark-gray) !important;
-}
-
+    .swal2-content {
+      color: var(--dark-gray) !important;
+    }
   </style>
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
@@ -565,6 +617,9 @@ body {
         <?php foreach ($pendingQueues as $q): ?>
           <div class="queue-item">
             <span class="queue-item-number"><?= $q['queue_num'] ?></span>
+            <span class="priority-flag <?= getPriorityClass($q['priority']) ?>">
+              <?= ucfirst($q['priority']) ?>
+            </span>
             <div class="queue-item-actions">
               <button class="btn btn-secondary btn-sm" onclick="callPendingQueue('<?= $q['queue_num'] ?>')" title="Call patient back">
                 📢 Call
@@ -655,10 +710,12 @@ body {
       </div>
       <div class="card-body">
         <?php if (count($allUpcomingQueues) > 0): ?>
-          <?php foreach (array_slice($allUpcomingQueues, 0, 5) as $q): ?>
+          <?php foreach (array_slice($allUpcomingQueues, 0, 10) as $q): ?>
             <div class="queue-item">
               <span class="queue-item-number"><?= $q['queue_num'] ?></span>
-              <span class="queue-item-priority"><?= ucfirst($q['priority']) ?></span>
+              <span class="priority-flag <?= getPriorityClass($q['priority']) ?>">
+                <?= ucfirst($q['priority']) ?>
+              </span>
               <?php if ($q['was_postponed'] ?? false): ?>
                 <form method="post" style="display:inline;">
                   <input type="hidden" name="qid" value="<?= $q['qid'] ?>">
@@ -669,9 +726,9 @@ body {
               <?php endif; ?>
             </div>
           <?php endforeach; ?>
-          <?php if (count($allUpcomingQueues) > 5): ?>
+          <?php if (count($allUpcomingQueues) > 10): ?>
             <div style="text-align: center; color: var(--dark-gray); font-size: 0.9rem;">
-              +<?= count($allUpcomingQueues) - 5 ?> more in queue
+              +<?= count($allUpcomingQueues) - 10 ?> more in queue
             </div>
           <?php endif; ?>
         <?php else: ?>
@@ -683,7 +740,6 @@ body {
 
   <!-- Right Side Panel -->
   <div class="side-panel">
-  
     <div class="card">
       <div class="card-header">
         <span>Postponed</span>
@@ -692,6 +748,9 @@ body {
         <?php foreach ($postponedQueues as $q): ?>
           <div class="queue-item">
             <span class="queue-item-number"><?= $q['queue_num'] ?></span>
+            <span class="priority-flag <?= getPriorityClass($q['priority']) ?>">
+              <?= ucfirst($q['priority']) ?>
+            </span>
             <form method="post" style="display:inline;">
               <input type="hidden" name="qid" value="<?= $q['qid'] ?>">
               <button type="submit" name="reactivate" class="btn btn-secondary btn-sm" 
@@ -919,7 +978,7 @@ function initializeAnnouncements() {
   
   <?php if (isset($currentQueue) && $currentQueue): ?>
     // Auto-announce on page load for X-ray department
-    if (window.location.pathname.includes('queue_sw.php')) {
+    if (window.location.pathname.includes('queue_bil.php')) {
       const announcedKey = `announced_${<?= $currentQueue['queue_num'] ?>}_<?= $departmentId ?>`;
       if (!localStorage.getItem(announcedKey)) {
         setTimeout(() => {
@@ -942,27 +1001,39 @@ window.addEventListener('load', () => {
 // Auto-refresh every 10 seconds
 setTimeout(() => location.reload(), 10000);
 
-
 // Logout functionality
-    document.getElementById('logoutBtn').addEventListener('click', function(){
-      Swal.fire({
-        title: 'Logout Confirmation',
-        text: 'Are you sure you want to logout?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#e63946',
-        cancelButtonColor: '#457b9d',
-        cancelButtonText: 'Cancel',
-        background: 'var(--gray)',
-        customClass: {
-          popup: 'sweet-alert-popup'
-        }
-       }).then ((result) => {
-         if (result.isConfirmed){
-          window.location.href='logout.php?token=<?= $_SESSION['logout_token'] ?>';
-         }
-       } );
-    });
+document.getElementById('logoutBtn').addEventListener('click', function(){
+  Swal.fire({
+    title: 'Logout Confirmation',
+    text: 'Are you sure you want to logout?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#e63946',
+    cancelButtonColor: '#457b9d',
+    cancelButtonText: 'Cancel',
+    background: 'var(--gray)',
+    customClass: {
+      popup: 'sweet-alert-popup'
+    }
+   }).then ((result) => {
+     if (result.isConfirmed){
+      window.location.href='logout.php?token=<?= $_SESSION['logout_token'] ?>';
+     }
+   } );
+});
 </script>
 </body>
 </html>
+<?php
+// Helper function to get priority CSS class
+function getPriorityClass($priority) {
+    $priority = strtolower($priority);
+    if (strpos($priority, 'emergency') !== false || strpos($priority, 'red flag') !== false) {
+        return 'priority-emergency';
+    } elseif (strpos($priority, 'pwd') !== false || strpos($priority, 'senior') !== false || strpos($priority, 'pregnant') !== false) {
+        return 'priority-pwd';
+    } else {
+        return 'priority-normal';
+    }
+}
+?>

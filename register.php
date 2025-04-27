@@ -66,10 +66,7 @@ if (isset($_POST["btnSave"])) {
                 $showAlert = true;
                 $errorMsg = "No record has been saved!";
             }
-
-            header("Location: mainpage.php");
         }
-
     }
 }
 ?>
@@ -279,16 +276,15 @@ if (isset($_POST["btnSave"])) {
 </head>
 <body>
     <div class="container">
-    <a href="mainpage.php" class="btn btn-outline-primary mb-3">
-    <i class="fas fa-arrow-left me-2"></i>Back to Main Page
-</a>
-<div class="form-container">
-
+        <a href="mainpage.php" class="btn btn-outline-primary mb-3">
+            <i class="fas fa-arrow-left me-2"></i>Back to Main Page
+        </a>
+        <div class="form-container">
             <div class="form-header">
                 <h1>Create Your Account</h1>
             </div>
             
-            <form action="register.php" method="POST">
+            <form id="registrationForm" action="register.php" method="POST">
                 <div class="form-group input-icon">
                     <i class="fas fa-user"></i>
                     <input type="text" name="username" id="username" class="form-control" placeholder="Enter your username" required>
@@ -321,80 +317,71 @@ if (isset($_POST["btnSave"])) {
                 <div class="form-group input-icon">
                     <i class="fas fa-lock"></i>
                     <input type="password" name="password" id="password" class="form-control" placeholder="Create a password" required>
+                    <span class="password-toggle" onclick="togglePassword()">
+                        <i id="toggleIcon" class="fas fa-eye"></i>
+                    </span>
                 </div>
 
                 <button type="submit" class="btn btn-primary" name="btnSave">
                     <i class="fas fa-user-plus me-2"></i> Create Account
                 </button>
             </form>
-
         </div>
     </div>
-
     <script>
-        function togglePassword() {
-            const password = document.getElementById("password");
-            const icon = document.getElementById("toggleIcon");
-            
-            if (password.type === "password") {
-                password.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                password.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
+    // Global variable to track the index window
+    let indexWindow = null;
+
+    function togglePassword() {
+        const password = document.getElementById("password");
+        const icon = document.getElementById("toggleIcon");
+        
+        if (password.type === "password") {
+            password.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            password.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
         }
+    }
 
-        <?php if ($showSuccess): ?>
-            Swal.fire({
-                icon: 'success',
-                title: 'Account Created!',
-                text: 'Your account has been created successfully.',
-                confirmButtonText: 'Continue',
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            }).then(() => {
-                window.location.href = 'index.php';
-            });
-        <?php elseif ($showAlert): ?>
-            Swal.fire({
-                icon: 'error',
-                title: 'Registration Failed',
-                text: '<?= $errorMsg; ?>',
-                confirmButtonText: 'Try Again',
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            });
-        <?php endif; ?>
-        <?php if ($showAlert): ?>
+    <?php if ($showSuccess): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Account Created!',
+            text: 'Your account has been created successfully.',
+            confirmButtonText: 'Continue',
+            customClass: {
+                confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+        }).then(() => {
+            // Clear the form
+            document.getElementById("registrationForm").reset();
+            
+            // Open index.php in new tab (or focus existing)
+            if (indexWindow && !indexWindow.closed) {
+                indexWindow.focus();
+            } else {
+                indexWindow = window.open('index.php', 'HQSIndexWindow');
+            }
+        });
+    <?php endif; ?>
 
-
-    </script>
-
-<script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: '<?= $errorMsg ?>',
-    });
+    <?php if ($showAlert): ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: '<?= $errorMsg; ?>',
+            confirmButtonText: 'Try Again',
+            customClass: {
+                confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+        });
+    <?php endif; ?>
 </script>
-<?php endif; ?>
-
-<?php if ($showSuccess): ?>
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Account has been created successfully.',
-    });
-</script>
-<?php endif; ?>
-
 </body>
 </html>

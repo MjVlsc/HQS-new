@@ -128,7 +128,7 @@ $logs = $conn->query("
     <header class="header">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
-                <h1 class="m-0"><i class="fas fa-clipboard-list me-2"></i>Audit Logs</h1>
+                <h1 class="m-0"><i class="fas fa-clipboard-list me-2"></i>Au<div class="d-flex justify-content-between align-items-center">dit Logs</h1>
                 <a href="<?php echo ($_SESSION['role'] == 'Admin') ? 'queue_display_admin.php' : 'queue_display.php'; ?>" class="btn btn-outline-light">
                     <i class="fas fa-arrow-left me-2"></i>Back to Queue
                 </a>

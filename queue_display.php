@@ -70,8 +70,23 @@ foreach ($departments as $department) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
   <style>
-    * { box-sizing: border-box; }
-    body {
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-color: #1d3557;
+      --secondary-color: #457b9d;
+      --accent-color:rgb(69, 9, 234);
+      --light-color: #f1faee;
+      --background-color: #f1f5f9;
+      --text-color: #333;
+      --white: #fff;
+      --shadow: 0 4px 10px rgba(0,0,0,0.1);
+      --transition: all 0.3s ease;
+    }    body {
       font-family: 'Inter', sans-serif;
       margin: 0;
       background: #f1f5f9;
@@ -226,12 +241,18 @@ foreach ($departments as $department) {
     }
 
     .user-info {
-      background-color: #e63946;
-      color: white;
-      border-radius: 5px;
-      padding: 10px 15px;
-      font-weight: 600;
-      cursor: pointer;
+  text-align: right;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #4e54c8 0%,rgb(34, 157, 168) 100%);
+  color: var(--white);
+  border-radius: 5px;
+  display: inline-block;
+  float: right;
+  font-weight: bold;
+  box-shadow: var(--shadow);
+  border: none;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
 
     .logout-dropdown {

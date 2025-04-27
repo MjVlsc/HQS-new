@@ -317,12 +317,40 @@ $allQueues = $stmt->fetchAll(PDO::FETCH_ASSOC);
         font-size: 0.85rem;
       }
     }
+    .btn {
+            width: 13%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
   </style>
 </head>
 <body>
   <div class="header-container">
     <div class="header-text">
-      <h1><i class="fas fa-list-alt me-2"></i>Queue Log</h1>
+      <h1><i class="fas fa-list-alt me-2"></i>Queue Log <a href="queue_display.php" class="btn btn-outline-primary mb-3 float-end">
+    <i class="fas fa-arrow-left me-2"></i>Back to Main Page
+</a></h1>
       <p class="subtitle">Complete history of all patient queues</p>  
     </div>
     
