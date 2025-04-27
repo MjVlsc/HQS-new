@@ -232,42 +232,48 @@ foreach ($departments as $department) {
       margin-top: 10px;
     }
 
-    .user-dropdown {
-      text-align: right;
-      margin-bottom: 20px;
-      position: relative;
-      display: inline-block;
-      float: right;
-    }
-
     .user-info {
-  text-align: right;
-  margin-bottom: 20px;
-  padding: 10px 15px;
-  background: linear-gradient(135deg, #4e54c8 0%,rgb(34, 157, 168) 100%);
-  color: var(--white);
-  border-radius: 5px;
-  display: inline-block;
-  float: right;
-  font-weight: bold;
-  box-shadow: var(--shadow);
-  border: none;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+ 	 text-align: right;
+ 	 margin-bottom: 20px;
+ 	 padding: 10px 15px;
+  	background: linear-gradient(135deg, #4e54c8 0%,rgb(34, 157, 168) 100%);
+  	color: var(--white);
+  	border-radius: 5px;
+  	display: inline-block;
+  	float: right;
+  	font-weight: bold;
+  	box-shadow: var(--shadow);
+ 	border: none;
+  	text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
 
-    .logout-dropdown {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 100%;
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 8px 15px;
+    .logout-btn {
+      margin: 12px 0;
+      text-decoration: none;
+      color: white;
+      font-size: 18px;
       font-weight: bold;
-      color: #e63946;
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+      background-color: #1d3557;
+      border: none;
+      width: 100%;
       cursor: pointer;
-      z-index: 10;
+      text-align: left;
+    }
+
+    .logout-btn:hover {
+      background-color: #457b9d;
+    }
+
+    .logout-btn i.icon {
+      margin-right: 12px;
+      font-size: 20px;
+      width: 25px;
+      text-align: center;
     }
 
     .modal {
@@ -355,9 +361,10 @@ foreach ($departments as $department) {
 <!-- Sidebar -->
 <div class="sidebar">
   <h2>HOSPITAL</h2>
-  <a href="add_patient_q.php" class="nav-link"><i class="fas fa-user-plus icon"></i><span>PATIENT TO QUEUE</span></a>
+    <a href="add_patient_q.php" class="nav-link"><i class="fas fa-user-plus icon"></i><span>PATIENT TO QUEUE</span></a>
   <a href="queue_list.php" class="nav-link"><i class="fas fa-list-alt icon"></i><span>QUEUE LOG</span></a>
   <a href="queue_display_user.php" class="nav-link" target="_blank"><i class="fas fa-bullhorn icon"></i><span>NOW SERVING</span></a>
+  <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt icon"></i><span>LOGOUT</span></button>
 </div>
 
 <!-- Logout Modal -->
@@ -381,8 +388,7 @@ foreach ($departments as $department) {
     <div class="user-info">
       Welcome, <?php echo htmlspecialchars($username); ?> (<?php echo htmlspecialchars($role); ?>)
     </div>
-    <div class="logout-dropdown" id="logoutBtn">Logout</div>
-  </div>
+    
 
   <h1>Hospital Queue Status</h1>
 
@@ -467,14 +473,6 @@ foreach ($departments as $department) {
 
     logoutModal.addEventListener('click', e => {
       if (e.target === logoutModal) logoutModal.classList.remove('active');
-    });
-
-    document.querySelector('.user-dropdown').addEventListener('mouseenter', () => {
-      document.querySelector('.logout-dropdown').style.display = 'block';
-    });
-
-    document.querySelector('.user-dropdown').addEventListener('mouseleave', () => {
-      document.querySelector('.logout-dropdown').style.display = 'none';
     });
 
     document.addEventListener('keydown', e => {

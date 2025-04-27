@@ -212,9 +212,9 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       padding: 20px;
       min-height: 100vh;
       display: grid;
-      grid-template-columns: 300px 1fr 300px; /* Increased side panel width */
+      grid-template-columns: 300px 1fr 300px;
       gap: 20px;
-      max-width: 1600px; /* Increased max width */
+      max-width: 1600px;
       margin: 0 auto;
     }
     
@@ -232,22 +232,6 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       gap: 20px;
     }
     
-    .user-info {
-      text-align: center;
-      margin-bottom: 10px;
-      padding: 10px 15px;
-      background: linear-gradient(135deg, #4e54c8 0%,rgb(34, 157, 168) 100%);
-      color: var(--white);
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 1rem;
-      box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
-      text-shadow: 2px 1px 1px rgba(0,0,0,0.2);
-      width: fit-content;
-      margin-left: auto;
-      transition: all 0.2s ease;
-    }
-    
     /* Cards */
     .card {
       background: var(--white);
@@ -257,7 +241,7 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       transition: transform 0.2s, box-shadow 0.2s;
       display: flex;
       flex-direction: column;
-      height: 400px; /* Fixed height for all cards */
+      height: 400px;
     }
     
     .card:hover {
@@ -280,9 +264,9 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       display: flex;
       flex-direction: column;
       gap: 12px;
-      overflow-y: auto; /* Add scrollbar when content overflows */
+      overflow-y: auto;
       flex-grow: 1;
-      padding-right: 8px; /* Add space for scrollbar */
+      padding-right: 8px;
     }
     
     /* Custom scrollbar */
@@ -308,7 +292,7 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
     .current-queue {
       text-align: center;
       padding: 30px 20px;
-      height: auto; /* Override fixed height for main queue display */
+      height: auto;
     }
     
     .queue-number {
@@ -397,6 +381,15 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       background: #5a6268;
     }
     
+    .btn-info {
+      background: #17a2b8;
+      color: var(--white);
+    }
+    
+    .btn-info:hover {
+      background: #138496;
+    }
+    
     /* Queue items */
     .queue-item {
       display: flex;
@@ -463,6 +456,99 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       padding: 20px 0;
     }
     
+    /* User info panel */
+    .user-info-panel {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .user-info-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 12px 18px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0,0,0,0.05);
+    order: 2; /* This will make it appear second (below the now-serving-btn) */
+  }
+  
+  .now-serving-btn {
+    background: var(--primary);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s;
+    font-size: 1rem;
+    order: 1; /* This will make it appear first (above the user info) */
+    width: fit-content;
+  }
+    
+    .user-icon {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.3;
+    }
+    
+    .username {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 0.95rem;
+    }
+    
+    .dept-name {
+      color: var(--dark-gray);
+      font-size: 0.8rem;
+    }
+    
+    .logout-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 1rem;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(230, 57, 70, 0.1);
+      transform: scale(1.05);
+    }
+    
+    
+    .now-serving-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .now-serving-btn i {
+      font-size: 1.1rem;
+    }
+    
     /* Responsive adjustments */
     @media (max-width: 1200px) {
       body {
@@ -478,6 +564,11 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       .side-panel > .card {
         flex: 1 1 350px;
       }
+      
+      .user-info-panel {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
     
     @media (max-width: 768px) {
@@ -492,6 +583,13 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       
       .side-panel > .card {
         flex: 1 1 100%;
+      }
+      
+      .user-info-panel {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        justify-content: space-between;
       }
     }
     
@@ -509,93 +607,38 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
     .btn-undo:hover {
       background: #5a6268;
     }
-
-    /* User info panel */
-    .user-info-panel {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 1000;
-    }
-
-    .user-info-content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: white;
-      padding: 10px 15px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .user-icon {
-      color: var(--primary);
-      font-size: 1.5rem;
-    }
-
-    .user-details {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.3;
-    }
-
-    .username {
-      font-weight: 600;
-      color: var(--primary-dark);
-      font-size: 0.95rem;
-    }
-
-    .dept-name {
-      color: var(--dark-gray);
-      font-size: 0.8rem;
-    }
-
-    .logout-btn {
-      background: none;
-      border: none;
-      color: var(--danger);
-      cursor: pointer;
-      font-size: 1rem;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.2s;
-    }
-
-    .logout-btn:hover {
-      background: rgba(230, 57, 70, 0.1);
-      transform: scale(1.05);
-    }
-
+    
     /* Adjust body padding to prevent overlap */
     body {
-      padding-bottom: 80px; /* Add space for the fixed user panel */
+      padding-bottom: 80px;
     }
-
+    
     /* SweetAlert customization */
-    .sweet-alert-popup {
+    .swal2-popup {
       background: var(--white) !important;
       color: var(--primary-dark) !important;
       border-radius: 12px !important;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
     }
-
+    
     .swal2-title {
       color: var(--primary-dark) !important;
     }
-
+    
     .swal2-content {
       color: var(--dark-gray) !important;
     }
-  </style>
+  </style>  
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 <div class="user-info-panel">
+  <a href="lab_display.php" class="now-serving-btn" title="View Display Screen" target="_blank">
+    <i class="fas fa-tv"></i>
+    <span>Now Serving</span>
+  </a>
+  
   <div class="user-info-content">
     <i class="fas fa-user-circle user-icon"></i>
     <div class="user-details">
@@ -673,14 +716,14 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
             <form method="post">
               <input type="hidden" name="qid" value="<?= $currentQueue['qid'] ?>">
               <button type="submit" name="complete_current" class="btn btn-success">
-                ✓ Mark as Completed
+                ✓ Completed
               </button>
             </form>
           <?php endif; ?>
           
           <form method="post" style="display:inline;">
             <button type="submit" name="pending_queue" class="btn btn-warning">
-              ⏳ Mark as Pending
+              ⏳ Pending
             </button>
           </form>
           

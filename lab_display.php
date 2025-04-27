@@ -12,51 +12,39 @@ if ($row = $deptStmt->fetch()) {
     $deptName = $row['name'];
 }
 
-// Get current queue
+// Get current queue with exact priority ordering
 $currentStmt = $conn->prepare("
     SELECT * FROM queues 
     WHERE status = 'in-progress' AND department_id = :dept_id
     ORDER BY 
-        CASE priority
-            WHEN 'emergency' THEN 1
-            WHEN 'PWD' THEN 2
-            WHEN 'Senior_Citizen' THEN 3
-            WHEN 'pregnant' THEN 4
-            ELSE 5
+        CASE 
+            WHEN priority = 'Red Flag' THEN 0
+            WHEN priority = 'Emergency' THEN 1
+            WHEN priority IN ('PWD', 'Senior Citizen', 'Pregnant') THEN 2
+            ELSE 3
         END,
-        CAST(SUBSTRING(queue_num, 5) AS UNSIGNED) ASC
+        CAST(SUBSTRING(queue_num, 3) AS UNSIGNED) ASC
     LIMIT 1
 ");
 $currentStmt->execute(['dept_id' => $departmentId]);
 $currentQueue = $currentStmt->fetch();
 
-// Get upcoming queues (next 5)
+// Get upcoming queues (same ordering)
 $upcomingStmt = $conn->prepare("
     SELECT * FROM queues 
     WHERE status = 'waiting' AND department_id = :dept_id
     ORDER BY 
-        CASE priority
-            WHEN 'emergency' THEN 1
-            WHEN 'PWD' THEN 2
-            WHEN 'Senior_Citizen' THEN 3
-            WHEN 'pregnant' THEN 4
-            ELSE 5
+        CASE 
+            WHEN priority = 'Red Flag' THEN 0
+            WHEN priority = 'Emergency' THEN 1
+            WHEN priority IN ('PWD', 'Senior Citizen', 'Pregnant') THEN 2
+            ELSE 3
         END,
-        created_at ASC
-    LIMIT 5
+        CAST(SUBSTRING(queue_num, 3) AS UNSIGNED) ASC
+    LIMIT 10
 ");
 $upcomingStmt->execute(['dept_id' => $departmentId]);
 $upcomingQueues = $upcomingStmt->fetchAll();
-
-// Get postponed queues (last 5)
-$postponedStmt = $conn->prepare("
-    SELECT * FROM queues 
-    WHERE status = 'postponed' AND department_id = :dept_id
-    ORDER BY updated_at DESC
-    LIMIT 5
-");
-$postponedStmt->execute(['dept_id' => $departmentId]);
-$postponedQueues = $postponedStmt->fetchAll();
 
 // Get pending queues (last 5)
 $pendingStmt = $conn->prepare("
@@ -76,25 +64,23 @@ $pendingQueues = $pendingStmt->fetchAll();
   <title>Queue Display - <?= htmlspecialchars($deptName) ?></title>
   <style>
     :root {
-      --primary: #457b9d;
-      --primary-dark: #1d3557;
+      --primary: #333;
       --secondary: #e63946;
       --warning: #FF9800;
       --light-gray: #f5f5f5;
       --white: #ffffff;
-      --dark-gray: #333;
     }
-    
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--primary-dark);
-      color: var(--white);
+      background: var(--white);
+      color: var(--primary);
       height: 100vh;
       display: grid;
       grid-template-columns: 1fr 2fr 1fr;
@@ -102,234 +88,183 @@ $pendingQueues = $pendingStmt->fetchAll();
       padding: 20px;
       overflow: hidden;
     }
-    
+
     .panel {
       display: flex;
       flex-direction: column;
       height: 100%;
+      background: var(--light-gray);
+      border-radius: 10px;
+      padding: 20px;
+      overflow-y: auto;
     }
-    
-    .left-panel {
-      justify-content: flex-start;
-    }
-    
-    .center-panel {
-      justify-content: center;
-      text-align: center;
-    }
-    
-    .right-panel {
-      justify-content: flex-start;
-    }
-    
+
     .department-name {
       font-size: 3rem;
       font-weight: bold;
       text-transform: uppercase;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       text-align: center;
     }
-    
+
     .section-title {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       margin-bottom: 1rem;
+      text-align: center;
       padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--white);
+      border-bottom: 2px solid var(--primary);
     }
-    
+
     .current-queue {
       margin: 2rem 0;
+      text-align: center;
     }
-    
+
     .current-number {
-      font-size: 10rem;
+      font-size: 8rem;
       font-weight: bold;
       color: var(--secondary);
       line-height: 1;
       margin: 1rem 0;
+      text-align: center;
     }
-    
+
     .priority-badge {
       font-size: 1.5rem;
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 1rem;
       border-radius: 20px;
       margin-top: 1rem;
       display: inline-block;
+      color: var(--white);
     }
-    
+
+    .priority-red-flag {
+      background-color: #d9534f;
+    }
+
     .priority-emergency {
-      background-color: #ff0000;
-      animation: blink 1s infinite;
+      background-color: #f0ad4e;
     }
-    
-    .priority-pwd {
-      background-color: #4CAF50;
+
+    .priority-pwd, .priority-senior-citizen, .priority-pregnant {
+      background-color: #5bc0de;
     }
-    
-    .priority-senior {
-      background-color: #FF9800;
-    }
-    
-    .priority-pregnant {
-      background-color: #9C27B0;
-    }
-    
+
     .priority-normal {
-      background-color: #2196F3;
+      background-color: #5bc0de;
     }
-    
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-    
-    .current-label {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    
+
     .queue-list {
       display: flex;
       flex-direction: column;
-      gap: 0.8rem;
+      gap: 1rem;
     }
-    
+
     .queue-item {
-      font-size: 1.8rem;
-      padding: 0.8rem;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 5px;
+      font-size: 1.6rem;
+      padding: 1rem;
+      background: var(--white);
+      border-radius: 10px;
       text-align: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
     }
-    
-    .postponed-item {
-      color: var(--warning);
+
+    .queue-item:hover {
+      transform: scale(1.05);
     }
-    
-    .pending-item {
-      color: #ffcccc;
+
+    .queue-item.pending {
+      background-color: #fff3cd;
     }
-    
+
     .empty-state {
-      font-size: 1.2rem;
-      opacity: 0.7;
+      font-size: 1.3rem;
+      opacity: 0.6;
       text-align: center;
       padding: 1rem;
     }
-    
+
     @media (max-width: 1200px) {
       body {
         grid-template-columns: 1fr 1fr;
         grid-template-rows: auto 1fr;
       }
-      
-      .center-panel {
-        grid-column: span 2;
-      }
-      
-      .department-name {
-        font-size: 2.5rem;
-      }
-      
-      .current-number {
-        font-size: 8rem;
-      }
     }
-    
+
     @media (max-width: 768px) {
       body {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto;
-        gap: 15px;
       }
-      
-      .center-panel {
-        grid-column: span 1;
-        order: 1;
-      }
-      
-      .left-panel {
-        order: 2;
-      }
-      
-      .right-panel {
-        order: 3;
-      }
-      
-      .department-name {
-        font-size: 2rem;
-      }
-      
       .current-number {
-        font-size: 6rem;
-      }
-      
-      .queue-item {
-        font-size: 1.5rem;
+        font-size: 5rem;
       }
     }
   </style>
 </head>
 <body>
-  
-    
-  
-   <!-- Right Panel - Upcoming Queues -->
-   <div class="panel left-panel">
-    <div class="section-title">Upcoming</div>
-    <div class="queue-list">
-      <?php if (count($upcomingQueues) > 0): ?>
-        <?php foreach ($upcomingQueues as $q): ?>
-          <div class="queue-item">
-            <?= htmlspecialchars($q['queue_num']) ?>
-            <?php if ($q['priority'] && $q['priority'] != 'normal'): ?>
-              <small>(<?= ucfirst(str_replace('_', ' ', $q['priority'])) ?>)</small>
-            <?php endif; ?>
-          </div>
-        <?php endforeach; ?>
-      <?php else: ?>
-        <div class="empty-state">No upcoming queues</div>
-      <?php endif; ?>
-    </div>
-  </div>
 
-  <!-- Center Panel - Current Queue -->
-  <div class="panel center-panel">
-    <div class="department-name"><?= htmlspecialchars($deptName) ?></div>
-    
-    <div class="current-queue">
-      <div class="current-label">Now Serving</div>
-      <?php if ($currentQueue): ?>
-        <div class="current-number"><?= htmlspecialchars($currentQueue['queue_num']) ?></div>
-        <?php if ($currentQueue['priority']): ?>
-          <div class="priority-badge priority-<?= strtolower(str_replace('_', '-', $currentQueue['priority'])) ?>">
-            <?= ucfirst(str_replace('_', ' ', $currentQueue['priority'])) ?>
-          </div>
-        <?php endif; ?>
-      <?php else: ?>
-        <div class="current-number empty-state">---</div>
-      <?php endif; ?>
-    </div>
+<!-- Left Panel (Upcoming) -->
+<div class="panel">
+  <div class="section-title">Upcoming</div>
+  <div class="queue-list">
+    <?php if (count($upcomingQueues) > 0): ?>
+      <?php foreach ($upcomingQueues as $q): ?>
+        <div class="queue-item">
+          <?= htmlspecialchars($q['queue_num']) ?>
+          <?php if ($q['priority']): ?>
+            <small>(<?= htmlspecialchars($q['priority']) ?>)</small>
+          <?php endif; ?>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div class="empty-state">No upcoming queues</div>
+    <?php endif; ?>
   </div>
-  
- 
+</div>
 
-  <script>
-    // Auto-refresh every 10 seconds
-    setTimeout(() => location.reload(), 10000);
-    
-    // Add animation for current queue number
-    const currentNumber = document.querySelector('.current-number');
-    if (currentNumber) {
-      currentNumber.style.transition = 'transform 0.3s ease';
-      setInterval(() => {
-        currentNumber.style.transform = 'scale(1.05)';
-        setTimeout(() => {
-          currentNumber.style.transform = 'scale(1)';
-        }, 300);
-      }, 5000);
-    }
-  </script>
+<!-- Center Panel (Now Serving) -->
+<div class="panel">
+  <div class="department-name"><?= htmlspecialchars($deptName) ?></div>
+  <div class="current-queue">
+    <div class="current-label">Now Serving</div>
+    <?php if ($currentQueue): ?>
+      <div class="current-number"><?= htmlspecialchars($currentQueue['queue_num']) ?></div>
+      <?php if ($currentQueue['priority']): ?>
+        <div class="priority-badge priority-<?= strtolower(str_replace(' ', '-', $currentQueue['priority'])) ?>">
+          <?= htmlspecialchars($currentQueue['priority']) ?>
+        </div>
+      <?php endif; ?>
+    <?php else: ?>
+      <div class="current-number empty-state">---</div>
+    <?php endif; ?>
+  </div>
+</div>
+
+<!-- Right Panel (Pending) -->
+<div class="panel">
+  <div class="section-title">Pending</div>
+  <div class="queue-list">
+    <?php if (count($pendingQueues) > 0): ?>
+      <?php foreach ($pendingQueues as $q): ?>
+        <div class="queue-item pending">
+          <?= htmlspecialchars($q['queue_num']) ?>
+          <?php if ($q['priority']): ?>
+            <small>(<?= htmlspecialchars($q['priority']) ?>)</small>
+          <?php endif; ?>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div class="empty-state">No pending queues</div>
+    <?php endif; ?>
+  </div>
+</div>
+
+<script>
+  // Auto-refresh every 5 seconds
+  setTimeout(() => location.reload(), 5000);
+</script>
+
 </body>
 </html>

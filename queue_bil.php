@@ -458,24 +458,43 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
     
     /* User info panel */
     .user-info-panel {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    
-    .user-info-content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: white;
-      padding: 10px 15px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .user-info-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 12px 18px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0,0,0,0.05);
+    order: 2; /* This will make it appear second (below the now-serving-btn) */
+  }
+  
+  .now-serving-btn {
+    background: var(--primary);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s;
+    font-size: 1rem;
+    order: 1; /* This will make it appear first (above the user info) */
+    width: fit-content;
+  }
     
     .user-icon {
       color: var(--primary);
@@ -519,19 +538,6 @@ $reactivatedQueues = $reactivatedStmt->fetchAll();
       transform: scale(1.05);
     }
     
-    .now-serving-btn {
-      background: var(--primary);
-      color: white;
-      padding: 10px 15px;
-      border-radius: 15px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: all 0.2s;
-    }
     
     .now-serving-btn:hover {
       background: var(--primary-dark);

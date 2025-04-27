@@ -2,6 +2,7 @@
 session_start();
 $showAlert = false;
 $errorMsg = '';
+$noAccount = false; // New flag for no account found
 
 if (isset($_POST["btnLogin"])) {
     require("lib/conn.php");
@@ -18,40 +19,44 @@ if (isset($_POST["btnLogin"])) {
         $stmt->execute();
         $user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role']; // Set role from database, not from POST
-            $_SESSION['dept_id'] = $user['dept_id'] ?? null; // Set department ID if exists
+        if ($user) {
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['dept_id'] = $user['dept_id'] ?? null;
 
-            if ($user['role'] == 'Admin') {
-                header("Location: mainpage.php");
-                exit();
-            } elseif (in_array($user['role'], ['Admitting', 'Information'])) {
-                header("Location: queue_display.php");
-                exit();
-            } elseif ($user['role'] == 'User') {
-                switch ($user['dept_id']) {
-                    case 1: header("Location: queue_bil.php"); break;
-                    case 2: header("Location: queue_phar.php"); break;
-                    case 3: header("Location: queue_med.php"); break;
-                    case 4: header("Location: queue_ult.php"); break;
-                    case 5: header("Location: queue_xray.php"); break;
-                    case 6: header("Location: queue_rh.php"); break;
-                    case 7: header("Location: queue_dia.php"); break;
-                    case 8: header("Location: queue_lab.php"); break;
-                    case 13: header("Location: queue_er.php"); break;
-                    case 14: header("Location: queue_sw.php"); break;
-                    case 15: header("Location: queue_rad.php"); break;
-                    default:
-                        echo "<script>alert('Unauthorized department access.'); history.back();</script>";
-                        break;
+                if ($user['role'] == 'Admin') {
+                    header("Location: mainpage.php");
+                    exit();
+                } elseif (in_array($user['role'], ['Admitting', 'Information'])) {
+                    header("Location: queue_display.php");
+                    exit();
+                } elseif ($user['role'] == 'User') {
+                    switch ($user['dept_id']) {
+                        case 1: header("Location: queue_bil.php"); break;
+                        case 2: header("Location: queue_phar.php"); break;
+                        case 3: header("Location: queue_med.php"); break;
+                        case 4: header("Location: queue_ult.php"); break;
+                        case 5: header("Location: queue_xray.php"); break;
+                        case 6: header("Location: queue_rh.php"); break;
+                        case 7: header("Location: queue_dia.php"); break;
+                        case 8: header("Location: queue_lab.php"); break;
+                        case 13: header("Location: queue_er.php"); break;
+                        case 14: header("Location: queue_sw.php"); break;
+                        case 15: header("Location: queue_rad.php"); break;
+                        default:
+                            echo "<script>alert('Unauthorized department access.'); history.back();</script>";
+                            break;
+                    }
+                    exit();
                 }
-                exit();
+            } else {
+                $showAlert = true;
+                $errorMsg = "Incorrect username or password!";
             }
         } else {
-            $showAlert = true;
-            $errorMsg = "Incorrect username or password!";
+            $noAccount = true; // No account found
         }
     }
 }
@@ -66,6 +71,7 @@ if (isset($_POST["btnLogin"])) {
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    /* Your existing CSS, untouched */
     body {
       margin: 0;
       padding: 0;
@@ -248,16 +254,29 @@ if (isset($_POST["btnLogin"])) {
     }
 
     <?php if ($showAlert): ?>
-      Swal.fire({
-        icon: 'error',
-        title: 'Login Failed',
-        text: '<?= $errorMsg ?>',
-        confirmButtonColor: '#1d3557',
-        background: '#fff',
-        customClass: {
-          popup: 'rounded-4 shadow'
-        }
-      });
+    Swal.fire({
+      icon: 'error',
+      title: 'Login Failed',
+      text: '<?= $errorMsg ?>',
+      confirmButtonColor: '#1d3557',
+      background: '#fff',
+      customClass: {
+        popup: 'rounded-4 shadow'
+      }
+    });
+    <?php endif; ?>
+
+    <?php if ($noAccount): ?>
+    Swal.fire({
+      icon: 'warning',
+      title: 'Account Not Found',
+      text: 'This account does not exist!',
+      confirmButtonColor: '#1d3557',
+      background: '#fff',
+      customClass: {
+        popup: 'rounded-4 shadow'
+      }
+    });
     <?php endif; ?>
   </script>
 </body>

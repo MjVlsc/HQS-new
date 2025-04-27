@@ -475,6 +475,12 @@ foreach ($departments as $department) {
     <span>DEPARTMENT QUEUE</span>
   </a>
   <?php if ($role === 'Admin'): ?>
+    <a href="users.php" class="nav-link">
+      <i class="fas fa-user icon" aria-hidden="true"></i>
+      <span>USER LIST</span>
+    </a>
+  <?php endif; ?>
+  <?php if ($role === 'Admin'): ?>
     <a href="register.php" class="nav-link">
       <i class="fas fa-user-cog icon" aria-hidden="true"></i>
       <span>ADD USER</span>

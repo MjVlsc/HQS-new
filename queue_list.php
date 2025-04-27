@@ -348,8 +348,8 @@ $allQueues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
   <div class="header-container">
     <div class="header-text">
-      <h1><i class="fas fa-list-alt me-2"></i>Queue Log <a href="queue_display.php" class="btn btn-outline-primary mb-3 float-end">
-    <i class="fas fa-arrow-left me-2"></i>Back to Main Page
+      <h1><i class="fas fa-list-alt me-2"></i>Queue Log <a href="queue_display.php" class="btn btn-outline-dark mb-3 float-end">
+      <i class="fas fa-house   me-2"></i>Home
 </a></h1>
       <p class="subtitle">Complete history of all patient queues</p>  
     </div>
@@ -378,10 +378,10 @@ $allQueues = $stmt->fetchAll(PDO::FETCH_ASSOC);
               $sortLabels = [
                 'created_at_desc' => 'Newest First',
                 'created_at_asc' => 'Oldest First',
-                'queue_num_desc' => 'Queue # (Z-A)',
-                'queue_num_asc' => 'Queue # (A-Z)',
-                'status_desc' => 'Status (Z-A)',
-                'status_asc' => 'Status (A-Z)'
+                // 'queue_num_desc' => 'Queue # (Z-A)',
+                // 'queue_num_asc' => 'Queue # (A-Z)',
+                // 'status_desc' => 'Status (Z-A)',
+                // 'status_asc' => 'Status (A-Z)'
               ];
               echo $sortLabels[$sortBy];
             ?>
@@ -391,11 +391,11 @@ $allQueues = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <li><a class="dropdown-item <?php echo $sortBy === 'created_at_desc' ? 'active' : ''; ?>" href="?<?php echo buildQueryString(['sort' => 'created_at_desc']); ?>">Newest First</a></li>
             <li><a class="dropdown-item <?php echo $sortBy === 'created_at_asc' ? 'active' : ''; ?>" href="?<?php echo buildQueryString(['sort' => 'created_at_asc']); ?>">Oldest First</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item <?php echo $sortBy === 'queue_num_desc' ? 'active' : ''; ?>" href="?<?php echo buildQueryString(['sort' => 'queue_num_desc']); ?>">Queue # (Z-A)</a></li>
+            <!-- <li><a class="dropdown-item <?php echo $sortBy === 'queue_num_desc' ? 'active' : ''; ?>" href="?<?php echo buildQueryString(['sort' => 'queue_num_desc']); ?>">Queue # (Z-A)</a></li>
             <li><a class="dropdown-item <?php echo $sortBy === 'queue_num_asc' ? 'active' : ''; ?>" href="?<?php echo buildQueryString(['sort' => 'queue_num_asc']); ?>">Queue # (A-Z)</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item <?php echo $sortBy === 'status_desc' ? 'active' : ''; ?>" href="?<?php echo buildQueryString(['sort' => 'status_desc']); ?>">Status (Z-A)</a></li>
-            <li><a class="dropdown-item <?php echo $sortBy === 'status_asc' ? 'active' : ''; ?>" href="?<?php echo buildQueryString(['sort' => 'status_asc']); ?>">Status (A-Z)</a></li>
+            <li><a class="dropdown-item <?php echo $sortBy === 'status_asc' ? 'active' : ''; ?>" href="?<?php echo buildQueryString(['sort' => 'status_asc']); ?>">Status (A-Z)</a></li> -->
           </ul>
         </div>
       </form>

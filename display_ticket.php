@@ -86,151 +86,150 @@ unset($_SESSION['ticket_data']); // Clear after use
     body {
       font-family: Arial, sans-serif;
       font-size: 10px;
-      width: 76mm;
-      height: 48mm;
-      margin: 2mm auto;
-      padding: 0 2mm;
+      margin: 0;
+      padding: 20px 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .ticket {
       border: 1px solid #000;
+      width: 76mm;
+      padding: 10px;
+      box-sizing: border-box;
+      background: #fff;
     }
     .ticket-columns {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
     }
-    
     .column {
-        width: 48%;
+      width: 48%;
     }
-    
     .ticket-detail {
-        margin-bottom: 8px;
+      margin-bottom: 8px;
     }
-    
     .detail-label {
-        font-weight: bold;
-        font-size: 0.9em;
+      font-weight: bold;
+      font-size: 0.9em;
     }
-    
     .ticket-header {
-        text-align: center;
-        margin-bottom: 15px;
+      text-align: center;
+      margin-bottom: 15px;
     }
-    
     .ticket-number {
-        font-size: 2em;
-        text-align: center;
-        font-weight: bold;
-        margin: 15px 0;
+      font-size: 2em;
+      text-align: center;
+      font-weight: bold;
+      margin: 15px 0;
     }
-    
+    .no-print {
+      margin-top: 20px;
+      text-align: center;
+    }
     .action-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
-        padding: 0 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
     }
-    
     .action-btn {
-        padding: 5px 10px;
-        font-size: 10px;
-        cursor: pointer;
-        border: 1px solid #ccc;
-        background: #f8f9fa;
-        border-radius: 3px;
+      padding: 12px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
     }
-    
     .print-btn {
-        background: #4CAF50;
-        color: white;
-        border: none;
+      background: #4CAF50;
+      color: white;
     }
-    
     .back-btn {
-        background: #f44336;
-        color: white;
-        border: none;
+      background: #f44336;
+      color: white;
     }
-    
     @media print {
+      body {
+        padding-top: 10mm; /* little gap from top */
+        align-items: center; /* center horizontally */
+        justify-content: flex-start; /* top vertically */
+      }
       .no-print {
         display: none !important;
       }
-      body {
-        padding: 0 2mm;
+      .ticket {
         margin: 0 auto;
       }
     }
   </style>
 </head>
 <body>
-<div class="ticket-header">
-    <h2>HOSPITAL QUEUE SYSTEM</h2>
-    <p>QUEUE TICKET</p>
+
+<div class="ticket">
+  <div class="ticket-header">
+      <h2>HOSPITAL QUEUE SYSTEM</h2>
+      <p>QUEUE TICKET</p>
+  </div>
+
+  <div class="ticket-number">
+      <?= htmlspecialchars($ticket['queue_num']) ?>
+  </div>
+
+  <div class="ticket-columns">
+      <div class="column">
+          <div class="ticket-detail">
+              <div class="detail-label">DEPARTMENT</div>
+              <div><?= htmlspecialchars($ticket['department']) ?></div>
+          </div>
+          <div class="ticket-detail">
+              <div class="detail-label">PRIORITY</div>
+              <div><?= htmlspecialchars(ucwords(str_replace('_', ' ', $ticket['priority']))) ?></div>
+          </div>
+      </div>
+
+      <div class="column">
+          <div class="ticket-detail">
+              <div class="detail-label">SERVICES</div>
+              <div><?= htmlspecialchars($ticket['services']) ?></div>
+          </div>
+          <div class="ticket-detail">
+              <div class="detail-label">DATE & TIME</div>
+              <?php
+                  date_default_timezone_set('Asia/Manila');
+                  echo date('M j, Y g:i A');
+              ?>
+          </div>
+      </div>
+  </div>
 </div>
 
-<div class="ticket-number">
-    <?= htmlspecialchars($ticket['queue_num']) ?>
-</div>
-
-<div class="ticket-columns">
-    <div class="column">
-        <div class="ticket-detail">
-            <div class="detail-label">DEPARTMENT</div>
-            <div><?= htmlspecialchars($ticket['department']) ?></div>
-        </div>
-        <div class="ticket-detail">
-            <div class="detail-label">PRIORITY</div>
-            <div><?= htmlspecialchars(ucwords(str_replace('_', ' ', $ticket['priority']))) ?></div>
-        </div>
+<div class="no-print">
+    <div class="action-buttons">
+        <button onclick="window.location.href='add_patient_q.php'" class="action-btn back-btn">
+            ← Back
+        </button>
+        <button onclick="printTicket()" class="action-btn print-btn">
+            🖨️ Print
+        </button>
     </div>
-    
-    <div class="column">
-        <div class="ticket-detail">
-            <div class="detail-label">SERVICES</div>
-            <div><?= htmlspecialchars($ticket['services']) ?></div>
-        </div>
-        <div class="ticket-detail">
-            <div class="detail-label">DATE & TIME</div>
-            <?php
-                date_default_timezone_set('Asia/Manila');
-                echo date('M j, Y g:i A');
-            ?>
-        </div>
-    </div>
-</div>
-
-<div class="no-print action-buttons">
-    <button onclick="window.location.href='<?= $redirect_url ?>'" class="action-btn back-btn">
-        <i class="fas fa-arrow-left"></i> Back
-    </button>
-    <button onclick="printTicket()" class="action-btn print-btn">
-        <i class="fas fa-print"></i> Print Ticket
-    </button>
 </div>
 
 <script>
     function printTicket() {
         window.print();
+        checkPrintStatus();
     }
-    
-    // Handle after print or cancel
     window.onafterprint = function() {
-        window.location.href = "<?= $redirect_url ?>";
+        window.location.href = "add_patient_q.php";
     };
-    
-    // Alternative method for browsers that don't trigger onafterprint
     function checkPrintStatus() {
         setTimeout(function() {
             window.location.href = "<?= $redirect_url ?>";
-        }, 3000); // Redirect after 3 seconds if still on page
-    }
-    
-    // Call check when print button is clicked
-    function printTicket() {
-        window.print();
-        checkPrintStatus();
+        }, 3000);
     }
 </script>
 </body>
 </html>
-
