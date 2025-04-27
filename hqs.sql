@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2025 at 08:47 AM
+-- Generation Time: Apr 27, 2025 at 02:56 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -205,7 +205,65 @@ INSERT INTO `audit_log` (`log_id`, `action_type`, `table_name`, `record_id`, `us
 (159, 'ADD_QUEUE', 'queues', 8, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-008\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-26 14:12:36'),
 (160, 'ADD_QUEUE', 'queues', 9, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-009\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-26 14:12:50'),
 (161, 'ADD_QUEUE', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-26 14:12:57'),
-(162, 'ADD_QUEUE', 'queues', 11, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-011\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-26 14:13:05');
+(162, 'ADD_QUEUE', 'queues', 11, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-011\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-26 14:13:05'),
+(163, 'ADD_QUEUE', 'queues', 1, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-001\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-27 07:11:37'),
+(164, 'ADD_QUEUE', 'queues', 2, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-002\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-27 07:11:51'),
+(165, 'ADD_QUEUE', 'queues', 3, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-003\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"PWD\"}', '2025-04-27 07:12:11'),
+(166, 'ADD_QUEUE', 'queues', 4, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-004\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-27 07:12:44'),
+(167, 'ADD_QUEUE', 'queues', 5, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-005\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-27 07:12:52'),
+(168, 'ADD_QUEUE', 'queues', 6, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-006\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-27 07:13:02'),
+(169, 'ADD_QUEUE', 'queues', 7, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-007\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-27 07:13:10'),
+(170, 'ADD_QUEUE', 'queues', 8, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-008\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Senior Citizen\"}', '2025-04-27 07:13:18'),
+(171, 'ADD_QUEUE', 'queues', 1, 10, 'Tin', 'Admin', '{\"queue_num\":\"BIL-001\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-27 07:13:25'),
+(172, 'ADD_QUEUE', 'queues', 2, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-002\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-27 07:16:22'),
+(173, 'ADD_QUEUE', 'queues', 3, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-003\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-27 07:16:35'),
+(174, 'ADD_QUEUE', 'queues', 4, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-004\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Pregnant\"}', '2025-04-27 07:16:51'),
+(175, 'ADD_QUEUE', 'queues', 5, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-005\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-27 07:16:58'),
+(176, 'ADD_QUEUE', 'queues', 6, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-006\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-27 07:17:05'),
+(177, 'ADD_QUEUE', 'queues', 7, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-007\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-27 07:17:13'),
+(178, 'ADD_QUEUE', 'queues', 8, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-008\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Emergency\"}', '2025-04-27 07:17:21'),
+(179, 'ADD_QUEUE', 'queues', 9, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-009\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-27 07:28:11'),
+(180, 'REPRINT_TICKET', 'queues', 9, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-009\"}', '2025-04-27 07:41:45'),
+(181, 'REPRINT_TICKET', 'queues', 9, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-009\"}', '2025-04-27 07:43:31'),
+(182, 'ADD_QUEUE', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\",\"service_name\":\"Billing Inquiry\",\"department_id\":\"1\",\"priority\":\"Normal\"}', '2025-04-27 07:43:59'),
+(183, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:44:37'),
+(184, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:44:38'),
+(185, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:44:51'),
+(186, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:44:55'),
+(187, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:45:07'),
+(188, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:45:10'),
+(189, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:45:26'),
+(190, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:47:28'),
+(191, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:47:32'),
+(192, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:49:02'),
+(193, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:50:29'),
+(194, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:50:46'),
+(195, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:51:01'),
+(196, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:51:06'),
+(197, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:52:41'),
+(198, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:53:59'),
+(199, 'REPRINT_TICKET', 'queues', 10, 2, 'Xen', 'Admitting', '{\"queue_num\":\"BIL-010\"}', '2025-04-27 07:55:59'),
+(200, 'ADD_QUEUE', 'queues', 11, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-011\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Normal\"}', '2025-04-27 09:13:25'),
+(201, 'ADD_QUEUE', 'queues', 12, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-012\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Emergency\"}', '2025-04-27 09:13:34'),
+(202, 'ADD_QUEUE', 'queues', 13, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-013\",\"service_name\":\"Urinalysis\",\"department_id\":\"8\",\"priority\":\"Normal\"}', '2025-04-27 09:13:50'),
+(203, 'ADD_QUEUE', 'queues', 14, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-014\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"PWD\"}', '2025-04-27 09:16:41'),
+(204, 'ADD_QUEUE', 'queues', 15, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-015\",\"service_name\":\"Urinalysis\",\"department_id\":\"8\",\"priority\":\"Normal\"}', '2025-04-27 09:17:44'),
+(205, 'ADD_QUEUE', 'queues', 16, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-016\",\"service_name\":\"Blood Test, Urinalysis\",\"department_id\":\"8\",\"priority\":\"Emergency\"}', '2025-04-27 09:17:53'),
+(206, 'ADD_QUEUE', 'queues', 17, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-017\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Red Flag\"}', '2025-04-27 11:19:12'),
+(207, 'ADD_QUEUE', 'queues', 18, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-018\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Emergency\"}', '2025-04-27 11:19:29'),
+(208, 'ADD_QUEUE', 'queues', 19, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-019\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Emergency\"}', '2025-04-27 11:38:07'),
+(209, 'ADD_QUEUE', 'queues', 20, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-020\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Normal\"}', '2025-04-27 11:38:14'),
+(210, 'ADD_QUEUE', 'queues', 21, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-021\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Normal\"}', '2025-04-27 11:38:14'),
+(211, 'ADD_QUEUE', 'queues', 22, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-022\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Normal\"}', '2025-04-27 11:54:40'),
+(212, 'ADD_QUEUE', 'queues', 23, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-023\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Emergency\"}', '2025-04-27 11:54:50'),
+(213, 'ADD_QUEUE', 'queues', 24, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-024\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Normal\"}', '2025-04-27 11:55:00'),
+(214, 'ADD_QUEUE', 'queues', 25, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-025\",\"service_name\":\"Blood Test\",\"department_id\":\"8\",\"priority\":\"Emergency\"}', '2025-04-27 11:55:28'),
+(215, 'REPRINT_TICKET', 'queues', 25, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-025\"}', '2025-04-27 11:57:43'),
+(216, 'REPRINT_TICKET', 'queues', 24, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-024\"}', '2025-04-27 11:57:46'),
+(217, 'REPRINT_TICKET', 'queues', 23, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-023\"}', '2025-04-27 11:57:48'),
+(218, 'REPRINT_TICKET', 'queues', 23, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-023\"}', '2025-04-27 11:57:52'),
+(219, 'REPRINT_TICKET', 'queues', 23, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-023\"}', '2025-04-27 11:58:41'),
+(220, 'REPRINT_TICKET', 'queues', 23, 10, 'Tin', 'Admin', '{\"queue_num\":\"LAB-023\"}', '2025-04-27 11:59:05');
 
 -- --------------------------------------------------------
 
@@ -266,17 +324,31 @@ CREATE TABLE `queues` (
 --
 
 INSERT INTO `queues` (`qid`, `queue_num`, `status`, `service_name`, `priority`, `department_id`, `announcement_count`, `was_postponed`, `created_at`, `updated_at`, `created_by`) VALUES
-(1, 'BIL-001', 'pending', 'Billing Inquiry', 'Normal', 1, 3, 0, '2025-04-26 22:09:05', '2025-04-26 22:09:57', 2),
-(2, 'BIL-002', 'completed', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-26 22:09:14', '2025-04-26 23:22:52', 2),
-(3, 'BIL-003', 'postponed', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-27 01:06:18', '2025-04-27 01:06:20', 2),
-(4, 'BIL-004', 'completed', 'Billing Inquiry', 'Emergency', 1, 0, 0, '2025-04-26 22:12:03', '2025-04-26 23:22:55', 2),
-(5, 'BIL-005', 'pending', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-26 22:12:11', '2025-04-26 23:22:58', 2),
-(6, 'BIL-006', 'pending', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-26 22:12:18', '2025-04-26 23:22:59', 2),
-(7, 'BIL-007', 'pending', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-26 22:12:26', '2025-04-26 23:23:01', 2),
-(8, 'BIL-008', 'pending', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-26 22:12:36', '2025-04-26 23:23:02', 2),
-(9, 'BIL-009', 'pending', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-26 22:12:50', '2025-04-26 23:23:08', 2),
-(10, 'BIL-010', 'pending', 'Billing Inquiry', 'Emergency', 1, 0, 0, '2025-04-26 22:12:57', '2025-04-26 23:22:56', 2),
-(11, 'BIL-011', 'pending', 'Billing Inquiry', 'Emergency', 1, 0, 0, '2025-04-26 22:13:05', '2025-04-26 23:22:57', 2);
+(1, 'BIL-001', 'completed', 'Billing Inquiry', 'Normal', 1, 1, 0, '2025-04-27 15:13:25', '2025-04-27 15:29:14', 10),
+(2, 'BIL-002', 'completed', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-27 15:16:22', '2025-04-27 15:29:11', 2),
+(3, 'BIL-003', 'completed', 'Billing Inquiry', 'Emergency', 1, 0, 0, '2025-04-27 15:16:35', '2025-04-27 15:29:13', 2),
+(4, 'BIL-004', 'completed', 'Billing Inquiry', 'Pregnant', 1, 1, 0, '2025-04-27 15:16:51', '2025-04-27 15:29:12', 2),
+(5, 'BIL-005', 'completed', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-27 15:16:58', '2025-04-27 15:29:11', 2),
+(6, 'BIL-006', 'completed', 'Billing Inquiry', 'Emergency', 1, 0, 0, '2025-04-27 15:17:05', '2025-04-27 15:17:33', 2),
+(7, 'BIL-007', 'completed', 'Billing Inquiry', 'Emergency', 1, 0, 0, '2025-04-27 15:17:13', '2025-04-27 15:29:13', 2),
+(8, 'BIL-008', 'completed', 'Billing Inquiry', 'Emergency', 1, 0, 0, '2025-04-27 15:17:21', '2025-04-27 15:29:12', 2),
+(9, 'BIL-009', 'completed', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-27 15:28:11', '2025-04-27 16:11:51', 2),
+(10, 'BIL-010', 'completed', 'Billing Inquiry', 'Normal', 1, 0, 0, '2025-04-27 15:43:59', '2025-04-27 16:11:51', 2),
+(11, 'LAB-011', 'completed', 'Blood Test', 'Normal', 8, 0, 1, '2025-04-27 17:17:07', '2025-04-27 17:20:43', 10),
+(12, 'LAB-012', 'completed', 'Blood Test', 'Emergency', 8, 0, 1, '2025-04-27 17:17:07', '2025-04-27 17:19:02', 10),
+(13, 'LAB-013', 'completed', 'Urinalysis', 'Normal', 8, 0, 0, '2025-04-27 17:13:50', '2025-04-27 17:20:43', 10),
+(14, 'LAB-014', 'completed', 'Blood Test', 'PWD', 8, 0, 0, '2025-04-27 17:16:41', '2025-04-27 17:19:05', 10),
+(15, 'LAB-015', 'completed', 'Urinalysis', 'Normal', 8, 0, 0, '2025-04-27 17:17:44', '2025-04-27 17:20:42', 10),
+(16, 'LAB-016', 'completed', 'Blood Test, Urinalysis', 'Emergency', 8, 0, 0, '2025-04-27 17:17:53', '2025-04-27 17:19:00', 10),
+(17, 'LAB-017', 'completed', 'Blood Test', 'Red Flag', 8, 0, 0, '2025-04-27 19:19:12', '2025-04-27 19:57:24', 10),
+(18, 'LAB-018', 'completed', 'Blood Test', 'Emergency', 8, 0, 0, '2025-04-27 19:19:29', '2025-04-27 19:57:24', 10),
+(19, 'LAB-019', 'completed', 'Blood Test', 'Emergency', 8, 0, 0, '2025-04-27 19:38:07', '2025-04-27 19:57:23', 10),
+(20, 'LAB-020', 'completed', 'Blood Test', 'Normal', 8, 0, 0, '2025-04-27 19:38:14', '2025-04-27 19:57:23', 10),
+(21, 'LAB-021', 'completed', 'Blood Test', 'Normal', 8, 0, 0, '2025-04-27 19:38:14', '2025-04-27 19:57:23', 10),
+(22, 'LAB-022', 'completed', 'Blood Test', 'Normal', 8, 3, 0, '2025-04-27 19:54:40', '2025-04-27 19:57:22', 10),
+(23, 'LAB-023', 'completed', 'Blood Test', 'Emergency', 8, 0, 0, '2025-04-27 19:54:50', '2025-04-27 19:55:06', 10),
+(24, 'LAB-024', 'in-progress', 'Blood Test', 'Normal', 8, 0, 0, '2025-04-27 19:55:00', '2025-04-27 19:57:33', 10),
+(25, 'LAB-025', 'completed', 'Blood Test', 'Emergency', 8, 0, 0, '2025-04-27 19:55:28', '2025-04-27 19:57:33', 10);
 
 -- --------------------------------------------------------
 
@@ -333,8 +405,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `role`, `dept_id`, `status`, `created_at`, `updated_at`) VALUES
-(2, 'Xen', '$2y$10$Z58UUPiBZWX5b4y6Zyor8.7mE2YLKZdQzRu9nsbKzwr8QFFmSY1ie', 'Admitting', 9, 2, '2025-04-15 02:31:55', '2025-04-15 02:31:55'),
-(3, 'DONG', '$2y$10$GoNBVN06aGqEmhhAo5ZztO7TQnxc/ngkWxtPl89YJ5xJIvEwxHkUy', '', 8, 2, '2025-04-15 02:32:31', '2025-04-15 02:32:31'),
+(2, 'Xen', '$2y$10$NcJWkAbIyCTDYcpwHrNgguBWuxUA84PvJFQER.3u0yBQq6KbgLm0.', 'Admitting', 9, 0, '2025-04-15 02:31:55', '2025-04-27 12:18:42'),
+(3, 'DONG', '$2y$10$qFhi6301ccVN8ws7iK9aMeEdGcjWqZEoB7ZrKTgtyKUkS69VBkjpO', 'Admin', 8, 2, '2025-04-15 02:32:31', '2025-04-27 10:10:42'),
 (4, 'Nyx', '$2y$10$VMOJCUh09IYJkl.ejuCQcevbycoB9gW/7auGXzj8bZhqqoMkQAegW', 'Information', 11, 2, '2025-04-15 04:05:06', '2025-04-15 04:05:06'),
 (5, 'Yen', '$2y$10$42wkSUWL1p8XOnHICA0uyu2Ma8btx.LWsOUqjtwwFbRm1Cm6q6wPW', 'HMO', 10, 2, '2025-04-15 04:05:35', '2025-04-15 04:05:35'),
 (6, 'Heh', '$2y$10$KcjduysYYlO0i8trLhownutfHmo12uVo/8QKZAAxdV5hlky7pUvxC', 'User', 8, 2, '2025-04-15 04:06:53', '2025-04-15 04:06:53'),
@@ -351,9 +423,9 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `role`, `dept_id`, `stat
 (19, 'see', '$2y$10$YHvyI7AwoUfN5SoVEENOR.tSXMZD9Bj8bJw1eWb9GahFIrnzl.2..', 'User', 15, 2, '2025-04-23 15:23:43', '2025-04-23 15:23:43'),
 (20, 'Labo', '$2y$10$I2n3ndKmn/TIrAFr3ZGraucoD9zC19m/hCSCD4AQKgvPZPOVZ8t.u', 'User', 8, 2, '2025-04-23 17:15:06', '2025-04-23 17:15:06'),
 (21, 'xr', '$2y$10$NrRfBBlWRCz1JM/DPT8TT.wMNenDqEQJ9Whz8sM4ck5F6HVFcgS0W', 'User', 5, 2, '2025-04-23 17:16:17', '2025-04-23 17:16:17'),
-(22, 'ult', '$2y$10$xij2Su1h1u03ihSQSqN0veycVX.bEjHU0O9dPxOTI17Bl9ODfV/SO', 'User', 4, 2, '2025-04-23 17:16:32', '2025-04-23 17:16:32'),
+(22, 'ult', '$2y$10$xij2Su1h1u03ihSQSqN0veycVX.bEjHU0O9dPxOTI17Bl9ODfV/SO', 'User', 4, 0, '2025-04-23 17:16:32', '2025-04-27 10:12:09'),
 (23, 'pha', '$2y$10$tFeflODhiFPj4ajBG2Exee3C3NyGSCp30PBmhrnPCewK52Ztbul5W', 'User', 2, 2, '2025-04-23 17:16:46', '2025-04-23 17:16:46'),
-(24, 'eme', '$2y$10$90hOztiJvTf/kJtBZqtmyenJJ7bFCLqSW1CfUb8ORNmPQASONzrxG', 'User', 13, 2, '2025-04-23 17:17:05', '2025-04-23 17:17:05');
+(24, 'eme', '$2y$10$8AP7.1aVA9CHqvzyx9RwmOxN2OVTQRV/ARPc5WyFrkA7wZuxE5a6C', 'User', 13, 0, '2025-04-23 17:17:05', '2025-04-27 10:11:21');
 
 --
 -- Indexes for dumped tables
@@ -403,7 +475,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_log`
 --
 ALTER TABLE `audit_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
 
 --
 -- AUTO_INCREMENT for table `departments`
@@ -415,7 +487,7 @@ ALTER TABLE `departments`
 -- AUTO_INCREMENT for table `queues`
 --
 ALTER TABLE `queues`
-  MODIFY `qid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `qid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `services`
